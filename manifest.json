@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "cmd-r's log",
+  "description": "take a screenshot every page load for select websites",
+  "version": "0.0.1",
+
+  "permissions": [
+    "tabs", "http://*/*"
+  ],
+
+  "browser_action": {
+    "default_icon": "camera.png",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  }
+}
