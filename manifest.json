@@ -6,7 +6,7 @@
   "version": "0.0.1",
 
   "permissions": [
-    "tabs", "http://*/*"
+    "tabs", "http://*/*", "unlimitedStorage"
   ],
 
   "browser_action": {
@@ -15,6 +15,6 @@
   },
   "background": {
     "persistent": false,
-    "scripts": ["background.js"]
+    "scripts": ["d3.min.js", "background.js"]
   }
 }
