@@ -11,3 +11,10 @@ chrome.tabs.getSelected(null, function(tab) {
 })
 
 
+document.querySelector('#gallerylink').addEventListener('click', function(event) {
+  console.log("link!");
+
+  chrome.tabs.create({url: "gallery.html"}, function(tab) {
+    console.log("created!")
+  });
+})
