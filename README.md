@@ -1,15 +1,12 @@
 # cmdrslog
 This extension allows you to save screenshots whenever you refresh a tab for URLs you specify.  
 
-You may want to do this for projects you are developing, setting the urls to something like localhost:8000 or your live server.
-You can specify separate folders for your projects, as well as a delay in miliseconds before taking the screenshot. 
+You may want to do this for projects you are developing, setting the urls to something like localhost:8000 or your live server.  
+You can specify separate folders for your projects, as well as a delay in miliseconds before taking the screenshot.  
 
 
 # development
-Right now if you want to try this you need to run chrome with special flags:  
-```/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files --unlimited-quota-for-files```
-
-I'm using the FileSystem API as described here:
+I'm using the FileSystem API as described here:  
 http://www.html5rocks.com/en/tutorials/file/filesystem/  
 
 ##TODO:
@@ -27,4 +24,12 @@ http://www.html5rocks.com/en/tutorials/file/filesystem/
     requests of files + file names and writes them to disk. then have a special
     script in the plugin that posts all the images
     from the FileSystem to the node script
+
+
+##Troubleshooting
+I'm using Chrome 24.0.1312.57 for OS X and things work out of the box.
+According to the html5rocks tutorial you may need to run chrome with special flags:  
+```/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files --unlimited-quota-for-files```
+
+
 

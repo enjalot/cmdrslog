@@ -22,7 +22,7 @@ function onInitFs(fs) {
   var domains = JSON.parse(localStorage.getItem("domains"));
   var directory = domains[0].name;
 
-  getDirectory("tributarydev", showThumbs);
+  getDirectory(directory, showThumbs);
   function showThumbs(error, dirEntry) {
     console.log("dir!", dirEntry);
     var dirReader = dirEntry.createReader();
