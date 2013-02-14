@@ -1,46 +1,24 @@
-// Copyright (c) 2012 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+console.log("background")
 
-// To make sure we can uniquely identify each screenshot tab, add an id as a
-// query param to the url that displays the screenshot.
-// Note: It's OK that this is a global variable (and not in localStorage),
-// because the event page will stay open as long as any screenshot tabs are
-// open.
-var id = 100;
+// Listen for a click on the camera icon.  On that click, take a screenshot.
+chrome.browserAction.onClicked.addListener(function(tab) {
+  console.log("HEY!");
+  /*
+    */
+});
+
+function urlMatch(url, pattern) {
+  //right now we do naive match assuming pattern is the host
+  //in the future we may want more sophisticated rules for matching urls
+  return url.indexOf(pattern) >= 0;
+}
 
 
 //FileSystem stuff from http://www.html5rocks.com/en/tutorials/file/filesystem/
-
-function errorHandler(e) {
-  var msg = '';
-
-  switch (e.code) {
-    case FileError.QUOTA_EXCEEDED_ERR:
-      msg = 'QUOTA_EXCEEDED_ERR';
-      break;
-    case FileError.NOT_FOUND_ERR:
-      msg = 'NOT_FOUND_ERR';
-      break;
-    case FileError.SECURITY_ERR:
-      msg = 'SECURITY_ERR';
-      break;
-    case FileError.INVALID_MODIFICATION_ERR:
-      msg = 'INVALID_MODIFICATION_ERR';
-      break;
-    case FileError.INVALID_STATE_ERR:
-      msg = 'INVALID_STATE_ERR';
-      break;
-    default:
-      msg = 'Unknown Error';
-      break;
-  };
-  console.log('Error: ' + msg);
-}
 window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-//window.requestFileSystem(window.PERSISTENT, 1024*1024*1024 /*1GB*/, onInitFs, errorHandler);
+//window.requestFileSystem(window.PERSISTENT, 1024*1024*1024, onInitFs, errorHandler);
 window.webkitStorageInfo.requestQuota(PERSISTENT, 500*1024*1024, function(grantedBytes) {
-  console.log("granted", grantedBytes);
+  console.log("granted", grantedBytes/1024/1024 + "MB");
   window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 }, function(e) {
   console.log('Error', e);
@@ -58,12 +36,14 @@ function onInitFs(fs) {
 
 
   function takeScreenshot(dirname, tab) {
-    console.log("taking screenshot");
+    console.log("taking screenshot", dirname, tab);
     chrome.tabs.captureVisibleTab(null, function(img) {
       var screenshotUrl = img;
+      console.log("IMG")
+      console.log(img);
       var format = d3.time.format("%Y-%m-%d %X");
       var time = new Date();
-      var filename = format(time) + "_" + (+time) + ".png";
+      var filename = format(time) + "_" + (+time) + ".jpg";
       //save the image (base64 data) into the specified directory
       getDirectory(dirname, function(err, dirEntry) {
         if(err) return errorHandler(err);
@@ -82,8 +62,11 @@ function onInitFs(fs) {
               console.log('Write failed: ' + e.toString());
             };
 
-            // Create a new Blob and write it to log.txt.
-            var blob = new Blob([img], {type: 'image/png'});
+            //TODO: figure out how to write a binary image instead of the data
+            //url? Since we are writing the string to disk, we can load it into
+            //the src of an img, but we can't directly open it with chrome
+            //var blob = new Blob([img], {type: 'image/jpeg'});
+            var blob = new Blob([img]);
 
             fileWriter.write(blob);
             console.log("wrote", fileEntry.toURL());
@@ -111,33 +94,58 @@ function onInitFs(fs) {
     //check if this is active tab
     var activeTab = localStorage.getItem("activeTab");
     console.log("active", activeTab, tabId);
+    var domains = localStorage.getItem("domains");
+    domains = JSON.parse(domains);
+
     if(+activeTab === tabId) {
       //check if this tab's url matches one we are listening on
+      for(var i = domains.length; i--;) {
+        if(urlMatch(tab.url, domains[i].host)) {
+          setTimeout(takeScreenshot, domains[i].delay, domains[i].name, tab);
+        }
+      }
+      /*
       if(tab.url.match(/tributary.io\/inlet/)) {
         console.log("url match!", tab.url)
         //save to appropriate directory
         var directory = "tributaryio"
-        takeScreenshot(directory, tab);
+        //takeScreenshot(directory, tab);
       } else if(tab.url.match(/localhost:8888\/inlet/)) {
         var directory = "tributarydev"
-        takeScreenshot(directory, tab);
+        //takeScreenshot(directory, tab);
       }
+      */
     }
 
   });
 
-  // Listen for a click on the camera icon.  On that click, take a screenshot.
-  chrome.browserAction.onClicked.addListener(function(tab) {
-    //alert("SUP", tab.id);
-    //console.log("TAB", tab, tab.id);
-    //localStorage.setItem("mytabid", tab.id);
-    /*
-    if (tab.url.match(/code.google.com/)) {
-      takeScreenshot();
-    } else {
-      alert('This sample can only take screenshots of code.google.com pages');
-    }
-    */
-  });
+}
 
+
+
+
+function errorHandler(e) {
+  var msg = '';
+
+  switch (e.code) {
+    case FileError.QUOTA_EXCEEDED_ERR:
+      msg = 'QUOTA_EXCEEDED_ERR';
+      break;
+    case FileError.NOT_FOUND_ERR:
+      msg = 'NOT_FOUND_ERR';
+      break;
+    case FileError.SECURITY_ERR:
+      msg = 'SECURITY_ERR';
+      break;
+    case FileError.INVALID_MODIFICATION_ERR:
+      msg = 'INVALID_MODIFICATION_ERR';
+      break;
+    case FileError.INVALID_STATE_ERR:
+      msg = 'INVALID_STATE_ERR';
+      break;
+    default:
+      msg = 'Unknown Error';
+      break;
+  };
+  console.log('Error: ' + msg);
 }
