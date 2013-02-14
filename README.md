@@ -14,15 +14,15 @@ http://www.html5rocks.com/en/tutorials/file/filesystem/
 
 ##TODO:
 
-- implement ui for choosing urls and directories
-* style and add tooltips for explaining url choosing ui
-* link to gallery (based on name) for each domain
+✓ implement ui for choosing urls and directories  
+* style and add tooltips for explaining url choosing ui  
+* link to gallery (based on name) for each domain  
 
-* implement ui for browsing directories
-* implement ui for browsing thumbnails
-* figure out Blob API to save images as proper images, not just data urls in text form.
+* implement ui for browsing directories  
+* implement ui for browsing thumbnails  
+* figure out Blob API to save images as proper images, not just data urls in text form.  
 
-* write export node script that will copy the files from sandbox to filesystem
+* write export node script that will copy the files from sandbox to filesystem  
     this could work by having the node script run locally and accept post
     requests of files + file names and writes them to disk. then have a special
     script in the plugin that posts all the images
