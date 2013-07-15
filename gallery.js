@@ -4,7 +4,7 @@
 window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 
 
-var requestSize = 500*1024*1024;
+var requestSize = 5000*1024*1024;
 localStorage.setItem("requestSize", requestSize);
 window.requestFileSystem(PERSISTENT, requestSize, onInitFs, errorHandler);
 

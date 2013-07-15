@@ -14,10 +14,11 @@ function urlMatch(url, pattern) {
 }
 
 
+var requestSize = 5000*1024*1024;
 //FileSystem stuff from http://www.html5rocks.com/en/tutorials/file/filesystem/
 window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 //window.requestFileSystem(window.PERSISTENT, 1024*1024*1024, onInitFs, errorHandler);
-window.webkitStorageInfo.requestQuota(PERSISTENT, 500*1024*1024, function(grantedBytes) {
+window.webkitStorageInfo.requestQuota(PERSISTENT, requestSize, function(grantedBytes) {
   console.log("granted", grantedBytes/1024/1024 + "MB");
   localStorage.setItem("granted", grantedBytes);
   window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
@@ -29,6 +30,7 @@ window.webkitStorageInfo.requestQuota(PERSISTENT, 500*1024*1024, function(grante
 function onInitFs(fs) {
   console.log('Opened file system: ' + fs.name);
 
+  /*
   chrome.syncFileSystem.getUsageAndQuota(fs, function (storageInfo) {
     console.log("INFO", storageInfo)
     var using = storageInfo.usageBytes/1024/1024;
@@ -37,6 +39,7 @@ function onInitFs(fs) {
     localStorage.setItem("using", using);
     localStorage.setItem("total", total);
   });
+  */
 
 
   function getDirectory(dirname, callback) {

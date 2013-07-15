@@ -53,7 +53,7 @@ function getLink(url) {
   return l;
 }
 
-d3.select("#add").on("click", function() {
+d3.select("button.add").on("click", function() {
   //add new domain to the list of domains
   newdiv = d3.select("#new");
   var newDomain = {};
