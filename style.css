@@ -1,0 +1,66 @@
+body {
+  width: 500px;
+}
+
+#new {
+  width: 100%;
+}
+
+#new .inputs {
+  width: 75;
+}
+#new .button {
+  width: 25%;
+}
+#new td {
+  width: 100%;
+  height: 100%;
+}
+#new input {
+  width: 100%;
+}
+#new button.add {
+  width: 100%;
+  height: 100%;
+}
+
+#existing table {
+  width: 100%;
+}
+.log {
+  padding: 5px;
+  font-size: 10px;
+  background-color: #e4e4e4;
+}
+.log:nth-child(even) {
+  background-color: #e8e8e8;
+}
+.log:nth-child(n+2):hover {
+  background-color: #e8c4c4;
+}
+
+.log a {
+  color: black;
+  display: inline-block;
+  width: 100%;
+  text-decoration: none;
+}
+.log a:hover {
+}
+.log a:visited {
+  color: auto;
+}
+
+.log td {
+  margin-left: 2px;
+  padding: 0 10px
+}
+.log .name {
+  font-size: 27px;
+}
+.host {
+}
+.delay {
+}
+.count {
+}

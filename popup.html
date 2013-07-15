@@ -1,23 +1,44 @@
 <html>
   <head>
     <script type="text/javascript" src="d3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style>
+    </style>
   </head>
 
-  <div id=new>
-    name: <input class=name></input>
-    host: <input class=host></input>
-    delay: <input class=delay></input>
-    <input id="add" type="button" value="Add"></input>
-  </div>
-  
-  <div id=existing>
-  </div>
-  
-  <a id=gallerylink href="/gallery.html" target="_blank">gallery</a>
-  <!--
-  sites<br>
-  <input id="snap" type="button" value="Snap!"></input>
-  -->
+  <body>
+    <table id=new>
+      <td class="inputs">
+        name: <input class=name></input><br>
+        host: <input class=host></input><br>
+        delay: <input class=delay></input>
+      </td>
+      <td class="button">
+        <button class="add">Add</button>
+      </td>
+    </table>
 
-  <script src="configure.js"></script>
+    <div id=existing>
+      <table>
+        <tr class="log header">
+          <td>Name</td>
+          <td>host:port</td>
+          <td>delay</td>
+          <td>logs</td>
+      </table>
+    </div>
+
+    <div id="stats">
+      Using <span class="using"></span>MB</span>
+    </div>
+
+
+    <!--
+    <a id=gallerylink href="/gallery.html" target="_blank">gallery</a>
+    sites<br>
+    <input id="snap" type="button" value="Snap!"></input>
+    -->
+
+    <script src="configure.js"></script>
+  </body>
 </html>

@@ -5,15 +5,26 @@
 
 //on popup load we render domains that we are watching
 var domains = getDomains();
-var existing = d3.select("#existing");
+var existing = d3.select("#existing").select("table");
 domains.forEach(function(domain) {
   renderDomain(existing, domain);
 })
 
+var format = d3.format(",3g");
+var MB = 1024*1024;
+window.webkitStorageInfo.queryUsageAndQuota(
+  webkitStorageInfo.PERSISTENT,
+  function(usage) {
+    console.log("usage", usage);
+    var mb = format((usage/MB).toFixed(2));
+    d3.select(".using").text(mb);
+  },
+  function(err) { console.log("error", err) });
+
 //default new domain to current tab
 initNewDomain(function(newDomain) {
   //fill in the new domain info
-  var newdiv = d3.select("#new").datum(newDomain);
+  var newdiv = d3.select("#new").select(".inputs").datum(newDomain);
   newdiv.select("input.name").attr("value", function(d) { return d.name; })
   newdiv.select("input.host").attr("value", function(d) { return d.host; })
   newdiv.select("input.delay").attr("value", function(d) { return d.delay; })
@@ -49,27 +60,36 @@ d3.select("#add").on("click", function() {
   newDomain.name = newdiv.select("input.name").node().value;
   newDomain.host = newdiv.select("input.host").node().value;
   newDomain.delay = newdiv.select("input.delay").node().value;
-  
+
   newdiv.select("input.name").attr("value", "");
   newdiv.select("input.host").attr("value", "");
   newdiv.select("input.delay").attr("value", 0);
-  
+
   var domains = getDomains();
   domains.push(newDomain);
 
   setDomains(domains);
-  
+
   var existing = d3.select("#existing");
   renderDomain(existing, newDomain);
 })
 
 function renderDomain(g, domain) {
-  var div = g.append("div")
-    .datum(domain);
-  div.append("span").text(function(d) { return "name: " + d.name; }).classed("name", true)
-  div.append("span").text(function(d) { return "host: " + d.host; }).classed("host", true)
-  div.append("span").text(function(d) { return "delay: " + d.delay; }).classed("delay", true)
- 
+  var row = g.append("tr").classed("log", true)
+    .datum(domain)
+
+  row.append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .text(function(d) { return "" + d.name; }).classed("name", true)
+  row.append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .text(function(d) { return "" + d.host; }).classed("host", true)
+  row.append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .text(function(d) { return "" + d.delay + "ms"; }).classed("delay", true)
+  row.append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .text(function(d) { return "" + (d.count ? d.count : 0); }).classed("count", true)
 }
 
 function getDomains() {

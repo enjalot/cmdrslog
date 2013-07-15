@@ -4,7 +4,9 @@
 window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 
 
-window.requestFileSystem(PERSISTENT, 500*1024*1024, onInitFs, errorHandler);
+var requestSize = 500*1024*1024;
+localStorage.setItem("requestSize", requestSize);
+window.requestFileSystem(PERSISTENT, requestSize, onInitFs, errorHandler);
 
 function toArray(list) {
   return Array.prototype.slice.call(list || [], 0);
@@ -20,7 +22,16 @@ function onInitFs(fs) {
   };
 
   var domains = JSON.parse(localStorage.getItem("domains"));
+
   var directory = domains[0].name;
+  console.log("domains", domains)
+  var hash;
+  console.log("hash", location.hash)
+  if(hash = location.hash) {
+    hash = hash.slice(1);
+    directory = hash
+  }
+  console.log("directory", directory)
 
   getDirectory(directory, showThumbs);
   function showThumbs(error, dirEntry) {
@@ -30,6 +41,18 @@ function onInitFs(fs) {
 
 
       var files = toArray(results);
+      console.log(files.length, "files");
+      //update count
+      for(var i = 0; i < domains.length; i++) {
+        if(domains[i].name === directory) {
+          domains[i].count = files.length;
+          localStorage.setItem("domains", JSON.stringify(domains));
+        }
+      }
+
+      if(files.length > 100) {
+        files = files.slice(0, 100)
+      }
 
       function render() {
         //console.log("render", fileData)
@@ -54,7 +77,7 @@ function onInitFs(fs) {
         
       fileSel.select("img")
         .each(function(fileEntry) {
-          console.log(fileEntry, fileEntry.toURL());
+          //console.log(fileEntry, fileEntry.toURL());
           (function(element, entry) {
             entry.file(function(file) {
               var reader = new FileReader();

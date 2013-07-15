@@ -19,6 +19,7 @@ window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFile
 //window.requestFileSystem(window.PERSISTENT, 1024*1024*1024, onInitFs, errorHandler);
 window.webkitStorageInfo.requestQuota(PERSISTENT, 500*1024*1024, function(grantedBytes) {
   console.log("granted", grantedBytes/1024/1024 + "MB");
+  localStorage.setItem("granted", grantedBytes);
   window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
 }, function(e) {
   console.log('Error', e);
@@ -28,6 +29,16 @@ window.webkitStorageInfo.requestQuota(PERSISTENT, 500*1024*1024, function(grante
 function onInitFs(fs) {
   console.log('Opened file system: ' + fs.name);
 
+  chrome.syncFileSystem.getUsageAndQuota(fs, function (storageInfo) {
+    console.log("INFO", storageInfo)
+    var using = storageInfo.usageBytes/1024/1024;
+    var total = storageInfo.quotaBytes/1024/1024;
+    console.log("hi", using, total)
+    localStorage.setItem("using", using);
+    localStorage.setItem("total", total);
+  });
+
+
   function getDirectory(dirname, callback) {
     fs.root.getDirectory(dirname, {create: true}, function(dirEntry) {
       callback(null, dirEntry);
@@ -36,11 +47,11 @@ function onInitFs(fs) {
 
 
   function takeScreenshot(dirname, tab) {
-    console.log("taking screenshot", dirname, tab);
+    //console.log("taking screenshot", dirname, tab);
     chrome.tabs.captureVisibleTab(null, function(img) {
       var screenshotUrl = img;
-      console.log("IMG")
-      console.log(img);
+      //console.log("IMG")
+      //console.log(img);
       var format = d3.time.format("%Y-%m-%d %X");
       var time = new Date();
       var filename = format(time) + "_" + (+time) + ".jpg";
@@ -48,7 +59,7 @@ function onInitFs(fs) {
       getDirectory(dirname, function(err, dirEntry) {
         if(err) return errorHandler(err);
         //save the thumbnail
-        console.log("writing to file", filename, "in", dirname);
+        //console.log("writing to file", filename, "in", dirname);
         dirEntry.getFile(filename, {create: true}, function(fileEntry) {
 
           // Create a FileWriter object for our FileEntry (log.txt).
@@ -93,7 +104,7 @@ function onInitFs(fs) {
 
     //check if this is active tab
     var activeTab = localStorage.getItem("activeTab");
-    console.log("active", activeTab, tabId);
+    //console.log("active", activeTab, tabId);
     var domains = localStorage.getItem("domains");
     domains = JSON.parse(domains);
 
@@ -101,6 +112,9 @@ function onInitFs(fs) {
       //check if this tab's url matches one we are listening on
       for(var i = domains.length; i--;) {
         if(urlMatch(tab.url, domains[i].host)) {
+          if(!domains[i].count) domains[i].count = 0;
+          domains[i].count += 1
+          localStorage.setItem("domains", JSON.stringify(domains));
           setTimeout(takeScreenshot, domains[i].delay, domains[i].name, tab);
         }
       }
