@@ -64,6 +64,7 @@ function onInitFs(fs) {
       var fileDiv = fileSel
         .enter()
         .append("div")
+        .classed("log", true)
       fileDiv
         .append("img")
         .attr({
@@ -71,7 +72,7 @@ function onInitFs(fs) {
         })
         .classed("file", true);
       fileDiv
-        .append("span")
+        .append("span").classed("name", true)
         .text(function(d) { return d.name });
 
         
