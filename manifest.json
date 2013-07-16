@@ -4,6 +4,12 @@
   "name": "cmd-r's log",
   "description": "take a screenshot every page load for select websites",
   "version": "0.0.1",
+  "icons": {
+    "16":"img/logo16.jpg",
+    "32":"img/logo32.jpg",
+    "48":"img/logo48.jpg",
+    "128":"img/logo128.jpg"
+  },
 
   "permissions": [
     "tabs", "http://*/*", "unlimitedStorage"
