@@ -27,7 +27,7 @@ body {
 #existing table {
   width: 100%;
 }
-.log {
+tr.header,.log {
   padding: 5px;
   font-size: 10px;
   background-color: #e4e4e4;
@@ -51,11 +51,11 @@ body {
   color: auto;
 }
 
-.log td {
+tr.header td, .log td {
   margin-left: 2px;
   padding: 0 10px
 }
-.log .name {
+.log .host {
   font-size: 27px;
 }
 .host {
@@ -63,4 +63,7 @@ body {
 .delay {
 }
 .count {
+}
+.hidden {
+  display: none;
 }

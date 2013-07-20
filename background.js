@@ -10,7 +10,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 function urlMatch(url, pattern) {
   //right now we do naive match assuming pattern is the host
   //in the future we may want more sophisticated rules for matching urls
-  return url.indexOf(pattern) >= 0;
+  return (url.indexOf(pattern) >= 0) && (url.indexOf("gallery.html?") < 0);
 }
 
 

@@ -7,24 +7,21 @@
   </head>
 
   <body>
-    <table id=new>
-      <td class="inputs">
-        name: <input class=name></input><br>
-        host: <input class=host></input><br>
-        delay: <input class=delay></input>
-      </td>
-      <td class="button">
-        <button class="add">Add</button>
-      </td>
-    </table>
+    <div class="addnew">
+      <button class="add">Add new</button>
+    </div>
+    <div class="editing hidden">
+      host: <input class=host></input>
+      delay: <input class=delay></input>
+      <button class="save">Save</button>
+    </div>
 
     <div id=existing>
       <table>
-        <tr class="log header">
-          <td>Name</td>
+        <tr class="header">
           <td>host:port</td>
-          <td>delay</td>
           <td>logs</td>
+          <td>latest</td>
       </table>
     </div>
 

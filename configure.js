@@ -3,17 +3,16 @@
 //we use localStorage to serialize the list of domains we are taking
 //screenshots of
 
+var defaultDelay = 1000;
+
 //on popup load we render domains that we are watching
 var domains = getDomains();
 var existing = d3.select("#existing").select("table");
-domains.forEach(function(domain) {
-  renderDomain(existing, domain);
-})
+renderDomains(existing, domains);
 
 var format = d3.format(",3g");
 var MB = 1024*1024;
-window.webkitStorageInfo.queryUsageAndQuota(
-  webkitStorageInfo.PERSISTENT,
+navigator.webkitPersistentStorage.queryUsageAndQuota(
   function(usage) {
     console.log("usage", usage);
     var mb = format((usage/MB).toFixed(2));
@@ -21,32 +20,25 @@ window.webkitStorageInfo.queryUsageAndQuota(
   },
   function(err) { console.log("error", err) });
 
-//default new domain to current tab
-initNewDomain(function(newDomain) {
-  //fill in the new domain info
-  var newdiv = d3.select("#new").select(".inputs").datum(newDomain);
-  newdiv.select("input.name").attr("value", function(d) { return d.name; })
-  newdiv.select("input.host").attr("value", function(d) { return d.host; })
-  newdiv.select("input.delay").attr("value", function(d) { return d.delay; })
-})
 
 function initNewDomain(callback) {
   chrome.tabs.getSelected(null, function(tab) {
     var link = getLink(tab.url);
     var host = link.hostname;
     var port = link.port;
-    if(port !== 80) {
+    if(port && port !== 80) {
       host += ":" + port;
     }
     var newDomain = {
       host: host,
-      name: host.split(".")[0],
-      delay: 0
+      //name: host.split(".")[0],
+      name: host,
+      delay: defaultDelay
     }
-    callback(newDomain);
+    console.log("NEW DOMAIN", newDomain)
+    callback(null, newDomain);
   });
 }
-
 function getLink(url) {
   var l = document.createElement("a");
   l.href = url;
@@ -55,41 +47,52 @@ function getLink(url) {
 
 d3.select("button.add").on("click", function() {
   //add new domain to the list of domains
-  newdiv = d3.select("#new");
-  var newDomain = {};
-  newDomain.name = newdiv.select("input.name").node().value;
-  newDomain.host = newdiv.select("input.host").node().value;
-  newDomain.delay = newdiv.select("input.delay").node().value;
 
-  newdiv.select("input.name").attr("value", "");
-  newdiv.select("input.host").attr("value", "");
-  newdiv.select("input.delay").attr("value", 0);
+  initNewDomain(function(err, newDomain) {
+    //if(!newDomain) return;
 
-  var domains = getDomains();
-  domains.push(newDomain);
+    var newdiv = d3.select(".editing").datum(newDomain);
+    newdiv.select("input.host").attr("value", function(d) { return d.name; })
+    newdiv.select("input.delay").attr("value", function(d) { return d.delay; })
 
-  setDomains(domains);
-
-  var existing = d3.select("#existing");
-  renderDomain(existing, newDomain);
+    d3.select(".editing").classed("hidden", false)
+    d3.select(".addnew").classed("hidden", true)
+    d3.select("button.save").on("click", function() {
+      var newDomain = {};
+      newDomain.name = newDomain.host = newdiv.select("input.host").node().value;
+      newDomain.delay = newdiv.select("input.delay").node().value;
+      var domains = getDomains();
+      domains.push(newDomain);
+      setDomains(domains);
+      renderDomains(existing, domains)
+    });
+  });
 })
 
-function renderDomain(g, domain) {
-  var row = g.append("tr").classed("log", true)
-    .datum(domain)
+function renderDomains(g, domains) {
+  console.log("DOMAINS", domains)
+  var rows = g.selectAll("tr.log")
+    .data(domains, function(d) { return d.host })
+
+  rows.exit().remove();
+  var row = rows.enter();
+  row = row.append("tr").classed("log", true)
+
 
   row.append("td")
-    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
-    .text(function(d) { return "" + d.name; }).classed("name", true)
-  row.append("td")
-    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
     .text(function(d) { return "" + d.host; }).classed("host", true)
   row.append("td")
-    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
-    .text(function(d) { return "" + d.delay + "ms"; }).classed("delay", true)
-  row.append("td")
-    .append("a").attr("href", function(d) { return "/gallery.html#" + d.name }).attr("target", "_blank")
+    .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
     .text(function(d) { return "" + (d.count ? d.count : 0); }).classed("count", true)
+  //TODO: put image in here
+  row.append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
+    .text(function(d) {
+      return "" + (d.count ? d.count : 0);
+      //getDirectory(directory, showThumbs);
+    }).classed("count", true)
+
 }
 
 function getDomains() {

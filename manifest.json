@@ -16,7 +16,7 @@
   ],
 
   "browser_action": {
-    "default_icon": "camera.png",
+    "default_icon": "icon16.png",
     "default_popup": "popup.html"
   },
   "background": {
