@@ -2,32 +2,33 @@
   <head>
     <script type="text/javascript" src="d3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link href='http://fonts.googleapis.com/css?family=Joti+One|Pathway+Gothic+One|Inconsolata:400,700|Carrois+Gothic+SC|Oxygen:300,400,700' rel='stylesheet' type='text/css'>
     <style>
     </style>
   </head>
 
   <body>
+    <div id="container">
+
     <div class="addnew">
-      <button class="add">Add new</button>
+      <span class="add">Add new</span>
     </div>
     <div class="editing hidden">
       host: <input class=host></input>
       delay: <input class=delay></input>
-      <button class="save">Save</button>
+      <span class="save">Save</span>
     </div>
 
     <div id=existing>
       <table>
-        <tr class="header">
-          <td>host:port</td>
-          <td>logs</td>
-          <td>latest</td>
       </table>
     </div>
 
-    <div id="stats">
+    <div class="stats">
       Using <span class="using"></span>MB</span>
     </div>
+
+    <div id=wtf tabindex=1></div>
 
 
     <!--
@@ -36,6 +37,7 @@
     <input id="snap" type="button" value="Snap!"></input>
     -->
 
+    </div>
     <script src="configure.js"></script>
   </body>
 </html>

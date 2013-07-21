@@ -1,33 +1,47 @@
 body {
   width: 500px;
+  font-family: 'Oxygen', sans-serif;
+  margin:0;
+  background-color: #cccccc;
+  border: 1px solid #eeeeee;
+}
+#container {
+  border: 1px solid #dddddd;
+  width: 499px;
+  height: 99%;
 }
 
-#new {
-  width: 100%;
-}
 
-#new .inputs {
-  width: 75;
+.addnew {
+  width: 50%;
+  height: 20px;
+  margin: 0 auto;
+  margin-top: 20px;
+  text-align: center;
 }
-#new .button {
-  width: 25%;
-}
-#new td {
+span.add {
   width: 100%;
-  height: 100%;
+  margin: 2px;
+  padding: 5px 10px 5px 10px;
+  background-color: #898989;
+  border: 1px solid transparent;
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
-#new input {
-  width: 100%;
-}
-#new button.add {
-  width: 100%;
-  height: 100%;
+span.add:hover {
+  color: #ececec;
+  border: 1px solid #454545;
 }
 
 #existing table {
+  margin-top: 20px;
   width: 100%;
+  border-spacing:0;
 }
-tr.header,.log {
+tr.log {
   padding: 5px;
   font-size: 10px;
   background-color: #e4e4e4;
@@ -35,8 +49,8 @@ tr.header,.log {
 .log:nth-child(even) {
   background-color: #e8e8e8;
 }
-.log:nth-child(n+2):hover {
-  background-color: #e8c4c4;
+.log:hover {
+  background-color: #d9d6d6;
 }
 
 .log a {
@@ -44,6 +58,7 @@ tr.header,.log {
   display: inline-block;
   width: 100%;
   text-decoration: none;
+  padding: 5px 0;
 }
 .log a:hover {
 }
@@ -51,7 +66,10 @@ tr.header,.log {
   color: auto;
 }
 
-tr.header td, .log td {
+.existing table {
+  outline: none;
+}
+.log td {
   margin-left: 2px;
   padding: 0 10px
 }
@@ -66,4 +84,19 @@ tr.header td, .log td {
 }
 .hidden {
   display: none;
+}
+
+.stats {
+  font-family: "Inconsolata";
+  width: 50%;
+  height: 20px;
+  margin: 0 auto;
+  padding: 5px 0;
+  text-align: center;
+}
+
+#wtf {
+  position:absolute;
+  top: -100px;
+  left: -100px;
 }

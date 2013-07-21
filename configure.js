@@ -45,7 +45,7 @@ function getLink(url) {
   return l;
 }
 
-d3.select("button.add").on("click", function() {
+d3.select("span.add").on("click", function() {
   //add new domain to the list of domains
 
   initNewDomain(function(err, newDomain) {
@@ -57,7 +57,7 @@ d3.select("button.add").on("click", function() {
 
     d3.select(".editing").classed("hidden", false)
     d3.select(".addnew").classed("hidden", true)
-    d3.select("button.save").on("click", function() {
+    d3.select("span.save").on("click", function() {
       var newDomain = {};
       newDomain.name = newDomain.host = newdiv.select("input.host").node().value;
       newDomain.delay = newdiv.select("input.delay").node().value;

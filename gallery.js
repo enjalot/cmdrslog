@@ -14,6 +14,18 @@ function getLink(url) {
   return l;
 }
 
+var format = d3.format(",3g");
+var MB = 1024*1024;
+navigator.webkitPersistentStorage.queryUsageAndQuota(
+  function(usage) {
+    console.log("usage", usage);
+    var mb = format((usage/MB).toFixed(2));
+    d3.select("span.size").text(mb);
+  },
+  function(err) { console.log("error", err) });
+
+
+
 
 function onInitFs(fs) {
   console.log("FS", fs);
@@ -50,7 +62,7 @@ function onInitFs(fs) {
     if(!domain) return;
 
     // TODO: clean this code up a bit
-    d3.select(".editing").select("span.name").text(domain.host);
+    d3.select("#header").select("a.name").text(domain.host).attr("href", domain.host);
     d3.select(".editing").select("input.delay").attr("value", domain.delay)
       .on("keyup", function(e) {
         var delay = this.value;
@@ -100,6 +112,7 @@ function onInitFs(fs) {
         }
       }
 
+      d3.select("span.logs").text(files.length);
       if(files.length > 100) {
         files = files.slice(skip, skip+100)
       }
