@@ -73,6 +73,14 @@ tr.log {
   margin-left: 2px;
   padding: 0 10px
 }
+.log .count {
+  float: right;
+}
+.log td img {
+  width: 50px;
+  float: right;
+  margin-right: 10px;
+}
 .log .host {
   font-size: 27px;
 }
@@ -93,6 +101,27 @@ tr.log {
   margin: 0 auto;
   padding: 5px 0;
   text-align: center;
+}
+
+.editing {
+  margin: 20px;
+  text-align: center;
+}
+span.save {
+  width: 100%;
+  margin: 2px;
+  padding: 5px 10px 5px 10px;
+  background-color: #898989;
+  border: 1px solid transparent;
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+span.save:hover {
+  color: #ececec;
+  border: 1px solid #454545;
 }
 
 #wtf {

@@ -10,6 +10,7 @@ var domains = getDomains();
 var existing = d3.select("#existing").select("table");
 renderDomains(existing, domains);
 
+/*
 var format = d3.format(",3g");
 var MB = 1024*1024;
 navigator.webkitPersistentStorage.queryUsageAndQuota(
@@ -19,6 +20,50 @@ navigator.webkitPersistentStorage.queryUsageAndQuota(
     d3.select(".using").text(mb);
   },
   function(err) { console.log("error", err) });
+*/
+function onUsage(usage) {
+  console.log("usage", usage);
+  var mb = format((usage/MB).toFixed(2));
+  d3.select(".using").text(mb);
+}
+
+function onInitFs(fs) {
+  console.log("FS", fs);
+
+  var domains = getDomains();
+  domains.forEach(function(domain) {
+    //TODO: change to domain.host
+    getDirectory(fs, domain.name, showFirstThumb);
+  });
+}
+
+function showFirstThumb(error, dirEntry, dirName) {
+  var dirReader = dirEntry.createReader();
+  dirReader.readEntries(function(results) {
+    var files = toArray(results);
+    var latest = files[0];
+    // TODO: change d.name to d.host
+    d3.selectAll("tr.log").filter(function(d) { console.log(d.name, dirName); return d.name === dirName })
+    .append("td")
+    .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
+    .append("img")
+    .each(function() {
+      var element = this;
+      latest.file(function(file) {
+        var reader = new FileReader();
+        reader.onloadend = function(e) {
+          element.src = e.target.result;
+        };
+        reader.readAsText(file)
+      });
+    })
+    .text(function(d) {
+      return "" + (d.count ? d.count : 0);
+      //getDirectory(directory, showThumbs);
+    }).classed("count", true)
+
+  });
+}
 
 
 function initNewDomain(callback) {
@@ -85,14 +130,6 @@ function renderDomains(g, domains) {
   row.append("td")
     .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
     .text(function(d) { return "" + (d.count ? d.count : 0); }).classed("count", true)
-  //TODO: put image in here
-  row.append("td")
-    .append("a").attr("href", function(d) { return "/gallery.html?" + d.name }).attr("target", "_blank")
-    .text(function(d) {
-      return "" + (d.count ? d.count : 0);
-      //getDirectory(directory, showThumbs);
-    }).classed("count", true)
-
 }
 
 function getDomains() {

@@ -1,39 +1,13 @@
 var skipNumber = 100;
-window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
 
-var requestSize = 5000*1024*1024;
-localStorage.setItem("requestSize", requestSize);
-window.requestFileSystem(PERSISTENT, requestSize, onInitFs, errorHandler);
-
-function toArray(list) {
-  return Array.prototype.slice.call(list || [], 0);
+function onUsage(usage) {
+  console.log("usage", usage);
+  var mb = format((usage/MB).toFixed(2));
+  d3.select("span.size").text(mb);
 }
-function getLink(url) {
-  var l = document.createElement("a");
-  l.href = url;
-  return l;
-}
-
-var format = d3.format(",3g");
-var MB = 1024*1024;
-navigator.webkitPersistentStorage.queryUsageAndQuota(
-  function(usage) {
-    console.log("usage", usage);
-    var mb = format((usage/MB).toFixed(2));
-    d3.select("span.size").text(mb);
-  },
-  function(err) { console.log("error", err) });
-
-
-
 
 function onInitFs(fs) {
   console.log("FS", fs);
-  function getDirectory(dirname, callback) {
-    fs.root.getDirectory(dirname, {create: true}, function(dirEntry) {
-      callback(null, dirEntry);
-    }, callback);
-  };
 
   var domains = JSON.parse(localStorage.getItem("domains"));
 
@@ -71,28 +45,28 @@ function onInitFs(fs) {
           localStorage.setItem("domains", JSON.stringify(domains));
         }
       })
-    d3.select("a.first").on("click", function() { skip = location.hash = 0; getDirectory(directory, showThumbs) })
+    d3.select("a.first").on("click", function() { skip = location.hash = 0; getDirectory(fs, directory, showThumbs) })
     d3.select("a.prev").on("click", function() {
       skip = (skip || 0) - skipNumber;
       if(skip < 0) skip = 0;
       location.hash = skip;
-      getDirectory(directory, showThumbs)
+      getDirectory(fs, directory, showThumbs)
     })
     d3.select("a.next").on("click", function() {
       skip = (skip || 0) + skipNumber;
       console.log("skip", skip, domain.count)
       if(skip >= domain.count) return skip -= skipNumber;
       location.hash = skip;
-      getDirectory(directory, showThumbs)
+      getDirectory(fs, directory, showThumbs)
     })
     d3.select("a.last").on("click", function() {
       skip = domain.count - skipNumber;
       if(skip < 0) skip = 0;
       location.hash = skip;
-      getDirectory(directory, showThumbs)
+      getDirectory(fs, directory, showThumbs)
     })
 
-    getDirectory(directory, showThumbs);
+    getDirectory(fs, directory, showThumbs);
   }
 
   function showThumbs(error, dirEntry) {
@@ -159,28 +133,4 @@ function onInitFs(fs) {
 
 }
 
-function errorHandler(e) {
-  var msg = '';
 
-  switch (e.code) {
-    case FileError.QUOTA_EXCEEDED_ERR:
-      msg = 'QUOTA_EXCEEDED_ERR';
-      break;
-    case FileError.NOT_FOUND_ERR:
-      msg = 'NOT_FOUND_ERR';
-      break;
-    case FileError.SECURITY_ERR:
-      msg = 'SECURITY_ERR';
-      break;
-    case FileError.INVALID_MODIFICATION_ERR:
-      msg = 'INVALID_MODIFICATION_ERR';
-      break;
-    case FileError.INVALID_STATE_ERR:
-      msg = 'INVALID_STATE_ERR';
-      break;
-    default:
-      msg = 'Unknown Error';
-      break;
-  };
-  console.log('Error: ' + msg);
-}
