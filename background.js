@@ -53,6 +53,7 @@ function onInitFs(fs) {
     //console.log("taking screenshot", dirname, tab);
     chrome.tabs.captureVisibleTab(null, function(img) {
       var screenshotUrl = img;
+      if(!img || !img.length) return;
       //console.log("IMG")
       //console.log(img);
       var format = d3.time.format("%Y-%m-%d %X");
