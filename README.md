@@ -14,3 +14,10 @@ http://www.html5rocks.com/en/tutorials/file/filesystem/
 The layout is all done with [d3.js](http://d3js.org)
 
 Getting the stored images out of the local FileSystem is the biggest item on the TODO list right now.
+
+# local files
+if you want to capture local files (like file://localhost/path/to/file.html)
+you need to update the manifest and add the following permision to the list of permissions:
+"file://*/*"
+
+unfortunately the chrome webstore will not allow this permission to be published

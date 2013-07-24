@@ -12,7 +12,7 @@
   },
 
   "permissions": [
-    "tabs", "http://*/*", "file://*/*", "unlimitedStorage"
+    "tabs", "http://*/*", "unlimitedStorage"
   ],
 
   "browser_action": {
