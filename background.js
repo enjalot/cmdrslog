@@ -2,7 +2,6 @@ console.log("background")
 
 // Listen for a click on the camera icon.  On that click, take a screenshot.
 chrome.browserAction.onClicked.addListener(function(tab) {
-  console.log("HEY!");
   /*
     */
 });
